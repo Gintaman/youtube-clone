@@ -1,5 +1,5 @@
 // Database entity definition
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class UserEntity {
@@ -11,4 +11,16 @@ export class UserEntity {
 
     @Column({ unique: true })
     username: string;
+
+    // TODO unique: true here?
+    @Column({ nullable: true })
+    email: string;
+
+    @Column({ nullable: true })
+    password: string;
+
+    @BeforeInsert()
+    emailToLowerCase() {
+        this.email = this.email.toLowerCase();
+    }
 }

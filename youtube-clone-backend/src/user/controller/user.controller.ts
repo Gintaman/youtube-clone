@@ -9,15 +9,34 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.interface';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 @Controller('users')
 export class UserController {
     constructor(private userService: UserService) {}
 
     @Post()
-    create(@Body() user: User): Observable<User> {
-        return this.userService.create(user);
+    create(@Body() user: User): Observable<User | { error: string }> {
+        return this.userService
+            .create(user)
+            .pipe(catchError((err) => of({ error: err.message })));
+    }
+
+    // TODO need better error handling
+    @Post('login')
+    login(
+        @Body() user: User,
+    ): Observable<{ access_token: string } | { error_message: string }> {
+        return this.userService.login(user).pipe(
+            map((jwt: string) => {
+                return {
+                    access_token: jwt,
+                };
+            }),
+            catchError((error) => {
+                return of({ error_message: error.message });
+            }),
+        );
     }
 
     @Get(':id')
