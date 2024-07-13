@@ -1,11 +1,19 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './service/auth.service';
+import { RolesGuard } from './guards/roles.guard';
+import { JwtAuthGuard } from './guards/jwt-guard';
+import { JwtStrategy } from './guards/jwt-strategy';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
     imports: [
+        forwardRef(() => UserModule),
         JwtModule.registerAsync({
+            // Circular dependency here, auth module depends on user module and vice versa
+            // (roles guard uses UserService, so AuthModule needs UserModule and UserModule
+            // needs AuthModule)
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
@@ -16,7 +24,7 @@ import { AuthService } from './service/auth.service';
             }),
         }),
     ],
-    providers: [AuthService],
+    providers: [AuthService, RolesGuard, JwtAuthGuard, JwtStrategy],
     exports: [AuthService],
 })
 export class AuthModule {}

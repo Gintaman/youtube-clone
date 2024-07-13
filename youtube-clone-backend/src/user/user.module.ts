@@ -9,5 +9,7 @@ import { AuthModule } from 'src/auth/auth.module';
     imports: [TypeOrmModule.forFeature([UserEntity]), AuthModule],
     providers: [UserService],
     controllers: [UserController],
+    // Export UserService because AuthModule -> RolesGuard needs it
+    exports: [UserService],
 })
 export class UserModule {}
