@@ -1,5 +1,14 @@
 // Database entity definition
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+// TODO migrate to using entity schema (https://typeorm.io/separating-entity-definition)
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
+import { RoleEntity } from 'src/role/models/role.entity';
 
 @Entity()
 export class UserEntity {
@@ -19,7 +28,11 @@ export class UserEntity {
     @Column({ nullable: true })
     password: string;
 
+    @ManyToOne(() => RoleEntity, { eager: true })
+    role: RoleEntity;
+
     @BeforeInsert()
+    @BeforeUpdate()
     emailToLowerCase() {
         this.email = this.email.toLowerCase();
     }
