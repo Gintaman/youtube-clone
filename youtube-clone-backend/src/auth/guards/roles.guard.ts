@@ -8,6 +8,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { UserService } from 'src/user/service/user.service';
 import { Roles } from '../decorator/roles.decorator';
+import { User } from 'src/user/models/user.interface';
+import { map } from 'rxjs';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -22,14 +24,16 @@ export class RolesGuard implements CanActivate {
             'roles',
             context.getHandler(),
         );
+        console.log('roles is: ', roles);
 
         if (!roles) {
             return true;
         }
 
         const request = context.switchToHttp().getRequest();
-        console.log('request: ', request);
-        const user = request.user;
-        return true;
+        // TODO Unsure why its request.user.user... Refer to comment in UserController findAll()
+        // on how Passport adds the user property to the request object.
+        const user: { user: User } = request.user;
+        return roles.indexOf(user?.user?.role?.role) > -1;
     }
 }

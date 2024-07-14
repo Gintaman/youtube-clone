@@ -13,6 +13,10 @@ import {
     throwError,
 } from 'rxjs';
 import { AuthService } from 'src/auth/service/auth.service';
+import { RoleService } from 'src/role/services/role.service';
+import { RoleEntity } from 'src/role/models/role.entity';
+
+// TODO switch to QueryBuilder API from Repository API
 
 @Injectable()
 export class UserService {
@@ -20,19 +24,28 @@ export class UserService {
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
         private readonly authService: AuthService,
+        private readonly roleSevice: RoleService,
     ) {}
 
+    // TODO need restrictions to disallow randos from creating users through API endpoint.
+    // TODO API can only create users with "User" role. Admins can only be added using internal tools
     create(user: User): Observable<User> {
-        return this.authService.hashPassword(user.password).pipe(
-            switchMap((passwordHash: string) => {
-                const newUser = new UserEntity();
-                newUser.name = user.name;
-                newUser.username = user.username;
-                newUser.email = user.email;
-                newUser.password = passwordHash;
-                return from(this.userRepository.save(newUser)).pipe(
-                    map((user: User) => this.removePassword(user)),
-                    catchError((err) => throwError(() => err)),
+        return from(this.roleSevice.getUserRole()).pipe(
+            switchMap((userRole: RoleEntity) => {
+                return this.authService.hashPassword(user.password).pipe(
+                    switchMap((passwordHash: string) => {
+                        const newUser = new UserEntity();
+                        newUser.name = user.name;
+                        newUser.username = user.username;
+                        newUser.email = user.email;
+                        newUser.password = passwordHash;
+                        // Default users created from UI to User
+                        newUser.role = userRole;
+                        return from(this.userRepository.save(newUser)).pipe(
+                            map((user: User) => this.removePassword(user)),
+                            catchError((err) => throwError(() => err)),
+                        );
+                    }),
                 );
             }),
             take(1),
