@@ -10,7 +10,8 @@ const bcrypt = require('bcrypt'); // Unfortunate, really don't want to use await
 export class AuthService {
     constructor(private readonly jwtService: JwtService) {}
 
-    generateJWT(user: User): Observable<string> {
+    generateAuthToken(user: User): Observable<string> {
+        console.log('generate auth token with payload: ', user);
         return from(this.jwtService.signAsync({ user }));
     }
 

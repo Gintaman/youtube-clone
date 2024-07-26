@@ -6,10 +6,13 @@ import { RolesGuard } from './guards/roles.guard';
 import { JwtAuthGuard } from './guards/jwt-guard';
 import { JwtStrategy } from './guards/jwt-strategy';
 import { UserModule } from 'src/user/user.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RefreshToken } from './models/refresh-token.entity';
 
 @Module({
     imports: [
         forwardRef(() => UserModule),
+        TypeOrmModule.forFeature([RefreshToken]),
         JwtModule.registerAsync({
             // Circular dependency here, auth module depends on user module and vice versa
             // (roles guard uses UserService, so AuthModule needs UserModule and UserModule

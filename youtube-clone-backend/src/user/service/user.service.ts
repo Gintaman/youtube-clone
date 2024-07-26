@@ -94,7 +94,7 @@ export class UserService {
         return this.validateUser(user.email, user.password).pipe(
             switchMap((user: User) => {
                 if (user) {
-                    return this.authService.generateJWT(user);
+                    return this.authService.generateAuthToken(user);
                 }
                 return from('Email/password is incorrect');
             }),

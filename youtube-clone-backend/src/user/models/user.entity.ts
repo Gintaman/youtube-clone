@@ -6,9 +6,11 @@ import {
     Column,
     Entity,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RoleEntity } from 'src/role/models/role.entity';
+import { RefreshToken } from 'src/auth/models/refresh-token.entity';
 
 @Entity()
 export class UserEntity {
@@ -30,6 +32,9 @@ export class UserEntity {
 
     @ManyToOne(() => RoleEntity, { eager: true })
     role: RoleEntity;
+
+    @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+    refreshTokens: RefreshToken[];
 
     @BeforeInsert()
     @BeforeUpdate()

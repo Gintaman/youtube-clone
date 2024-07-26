@@ -12,6 +12,19 @@ Notes:
         -   Add -n to give it a name, otherwise it will be named with a timestamp
         -   Add -d to specify the directory
     -   Run migrations using data-source.ts config: npm run typeorm migration:run -d dist/data-source.js
+    -   With synchronize: true (not recommended for production), TypeORM will automatically create tables and columns. Run migrations manually instead
+
+    ### Example:
+
+    1. Create new entity file, include it in the module (TypeOrmModule.forFeature([NewEntity])) ()
+    2. Run "npm run build"
+    3. Run "typeorm migration:generate -d dist/data-source.js migrations/Add-Refresh-Token-Table-2"
+        - data-source.ts defined an entities array, generated migration will include all files that end in \*.entity.ts
+        - if a number is needed, have it at the end, otherwise typeorm generates an invalid class with a nubmer in front
+        - TODO move to package.json script
+    4. File gets generated in migrations folder with timestamp appended, rename if needed
+    5. Run miration: "npm run typeorm:migrate"
+    6. Verify table in db
 
     Errors:
 
