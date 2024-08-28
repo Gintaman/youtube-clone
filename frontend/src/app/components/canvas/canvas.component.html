@@ -1,0 +1,16 @@
+<div class="whiteboard">
+  <canvas
+    (mousedown)="onMouseDown($event)"
+    (mouseup)="onMouseUp($event)"
+    #canvas
+    [width]="width"
+    [height]="height"
+  >
+    Oops, it looks like your browser doesn't support the canvas element!
+  </canvas>
+  <app-toolbar
+    (testEvent)="undo()"
+    (testEvent2)="redo()"
+    (clearCanvas)="onClear($event)"
+  ></app-toolbar>
+</div>

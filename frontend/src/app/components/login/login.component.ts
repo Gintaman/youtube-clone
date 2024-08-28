@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '@services/login/login.service';
 import { take, tap } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [MatButtonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })

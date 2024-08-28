@@ -8,4 +8,11 @@ export const routes: Routes = [
         (mod) => mod.LoginComponent
       ),
   },
+  {
+    path: 'canvas',
+    loadComponent: () =>
+      import('@components/canvas/canvas.component').then(
+        (mod) => mod.CanvasComponent
+      ),
+  },
 ];
