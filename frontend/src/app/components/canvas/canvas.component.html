@@ -1,4 +1,8 @@
-<div class="whiteboard">
+<div class="whiteboard" [tabIndex]="0" (keydown)="onKeyDown($event)">
+  <app-toolbar
+    (clearCanvas)="onClear($event)"
+    (selectedTool)="onSelectedTool($event)"
+  ></app-toolbar>
   <canvas
     (mousedown)="onMouseDown($event)"
     (mouseup)="onMouseUp($event)"
@@ -8,9 +12,4 @@
   >
     Oops, it looks like your browser doesn't support the canvas element!
   </canvas>
-  <app-toolbar
-    (testEvent)="undo()"
-    (testEvent2)="redo()"
-    (clearCanvas)="onClear($event)"
-  ></app-toolbar>
 </div>

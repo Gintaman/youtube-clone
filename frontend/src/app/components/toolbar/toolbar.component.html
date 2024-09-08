@@ -1,5 +1,21 @@
-<div class="toolbar">
-  <span (click)="onClear()">clear</span>
-  <span (click)="test()">undo</span>
-  <span (click)="test2()">redo</span>
+<div class="toolbar" cdkDrag>
+  <div class="toolbar-drag-handle" cdkDragHandle>
+    <img
+      [width]="20"
+      [height]="20"
+      src="assets/svgs/drag-handle.svg"
+      alt="drag-handle"
+    />
+  </div>
+  @for (tool of tools; track tool.name) {
+  <div class="tool" (click)="selectTool(tool)">
+    <img
+      [width]="20"
+      [height]="20"
+      [src]="'assets/svgs/' + tool.icon"
+      alt="pencil"
+    />
+  </div>
+
+  }
 </div>

@@ -5,7 +5,6 @@ import { Point } from './pen';
 // Each tool implements
 export abstract class DrawingTool {
   protected ctx: CanvasRenderingContext2D;
-  protected history: any[];
   // NOTE we don't need ctx options like fillStyle etc here since its set globally
 
   // should we have manage the "Drawable" objects here? Seems like we'd be coupling them together
@@ -20,14 +19,12 @@ export abstract class DrawingTool {
   // Maintaining a reference to the global canvas history in each drawing tool seems like a bad idea then.
   // Certain tools can maintain a "path" variable instead, and we can save the entire path array to
   // the global history on mouseup, handled by the main canvas component
-  constructor(ctx: CanvasRenderingContext2D, history: any[]) {
+  constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
-    this.history = history;
   }
 
   draw(startX: number, startY: number, endX: number, endY: number): void {
     this.drawAndSaveAction(startX, startY, endX, endY);
-    this.saveDraw(() => this.drawAndSaveAction(startX, startY, endX, endY));
   }
 
   protected abstract drawAndSaveAction(
@@ -36,10 +33,6 @@ export abstract class DrawingTool {
     endX: number,
     endY: number
   ): void;
-
-  protected saveDraw(action: any): void {
-    // this.history.push(action);
-  }
 
   // TODO This might be better named getStrokes or something, but it defines how to redraw the shape from
   // mousedown to mouseup. For a pen tool, this would be an array of draw function closures that redraw the
