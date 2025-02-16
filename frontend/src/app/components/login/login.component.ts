@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
         tap((response) => {
           console.log('log in response: ', response);
         }),
-        take(1)
+        take(1),
       )
       .subscribe();
   }

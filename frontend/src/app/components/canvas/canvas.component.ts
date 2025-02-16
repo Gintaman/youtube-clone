@@ -2,29 +2,46 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  OnInit,
   ViewChild,
+  inject,
+  signal,
 } from '@angular/core';
 import { DrawingTool } from '@components/tools/drawing-tool';
 import { PenTool } from '@components/tools/pen';
 import { ToolbarComponent } from '@components/toolbar/toolbar.component';
 import { Drawable } from '@components/tools/drawable';
 import { Tool } from '@components/toolbar/tools.constants';
+import { KeyManagerService } from '@services/key-manager/key-manager.service';
+import { ToolwheelComponent } from '@components/toolwheel/toolwheel.component';
 
 @Component({
   selector: 'app-canvas',
   standalone: true,
-  imports: [ToolbarComponent],
+  imports: [ToolbarComponent, ToolwheelComponent],
   templateUrl: './canvas.component.html',
   styleUrl: './canvas.component.scss',
 })
-export class CanvasComponent implements OnInit, AfterViewInit {
+export class CanvasComponent implements AfterViewInit {
   @ViewChild('canvas', { static: false })
   canvas!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D;
 
+  private readonly keyManager = inject(KeyManagerService);
+
   public width = window.innerWidth;
   public height = window.innerHeight;
+
+  public mouseCoords = {
+    x: 0,
+    y: 0,
+  };
+
+  public toolWheelPosition = signal({
+    x: 0,
+    y: 0,
+  });
+
+  public showToolwheel = signal(false);
 
   public error = '';
 
@@ -41,10 +58,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   // we can reverse their order and just call redraw and they should be drawn in the correct visual order
   private redoStack: Drawable[] = [];
 
-  public ngOnInit() {
-    // TODO fix this
-  }
-
   public onSelectedTool(tool: Tool) {
     this.tool = new tool.toolFactory(this.ctx);
   }
@@ -52,7 +65,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit() {
     try {
       this.ctx = this.canvas.nativeElement.getContext(
-        '2d'
+        '2d',
       ) as CanvasRenderingContext2D;
     } catch (error) {
       console.error('Got an error: ', error);
@@ -117,8 +130,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           },
         ],
         [],
-        this.ctx
-      )
+        this.ctx,
+      ),
     );
     this.replayHistory();
   }
@@ -160,5 +173,39 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     } else if (event.key === 'Z' && (event.ctrlKey || event.metaKey)) {
       this.redo();
     }
+
+    if (event.key === 't') {
+      // TODO how do we handle showing toolwheel on tablet or mobile?
+      // Maybe do double tap? long press wouldn't work probably? how often do users long press in 1
+      // spot when drawing something on a tablet? actually long press might work. for mobile users would also
+      // need to configure which toolwheel gets shown, assuming we have one for colors as well.
+      if (!this.showToolwheel()) {
+        this.toolWheelPosition.set({
+          x: this.mouseCoords.x,
+          y: this.mouseCoords.y,
+        });
+      }
+      this.showToolwheel.set(true);
+    }
   }
+
+  public onMouseMove(event: MouseEvent) {
+    this.mouseCoords = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+  }
+
+  public onKeyUp(event: KeyboardEvent) {
+    if (event.key === 't') {
+      this.toolWheelPosition.set({
+        x: this.mouseCoords.x,
+        y: this.mouseCoords.y,
+      });
+      this.showToolwheel.set(false);
+    }
+  }
+
+  // TODO do we really need something like a key event listener?
+  // its just for setting and using hotkeys
 }

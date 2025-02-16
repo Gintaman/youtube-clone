@@ -1,8 +1,20 @@
-<div class="whiteboard" [tabIndex]="0" (keydown)="onKeyDown($event)">
+<div
+  class="whiteboard"
+  [tabIndex]="0"
+  (keydown)="onKeyDown($event)"
+  (keyup)="onKeyUp($event)"
+  (mousemove)="onMouseMove($event)"
+>
   <app-toolbar
     (clearCanvas)="onClear($event)"
     (selectedTool)="onSelectedTool($event)"
-  ></app-toolbar>
+  />
+  @if (showToolwheel()) {
+  <app-toolwheel
+    [posX]="toolWheelPosition().x"
+    [posY]="toolWheelPosition().y"
+  />
+  }
   <canvas
     (mousedown)="onMouseDown($event)"
     (mouseup)="onMouseUp($event)"
