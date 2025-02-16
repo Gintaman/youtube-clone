@@ -1,13 +1,17 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { Tool, Tools } from './tools.constants';
 
 @Component({
   selector: 'app-toolbar',
   standalone: true,
-  imports: [],
+  imports: [CdkDrag, CdkDragHandle],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
 })
 export class ToolbarComponent {
+  public tools = Tools;
+
   // Should the toolbar take in a ctx instance and update it directly?
   // No, the toolbar is just used to emit what tool is selected.
   // It can emit a function closure that takes a ctx as input, and then
@@ -24,10 +28,7 @@ export class ToolbarComponent {
   public clearCanvas = new EventEmitter();
 
   @Output()
-  public testEvent = new EventEmitter();
-
-  @Output()
-  public testEvent2 = new EventEmitter();
+  public selectedTool = new EventEmitter();
 
   // Emit a tool enum
   public onChangeTool() {}
@@ -36,11 +37,7 @@ export class ToolbarComponent {
     this.clearCanvas.emit();
   }
 
-  public test() {
-    this.testEvent.emit();
-  }
-
-  public test2() {
-    this.testEvent2.emit();
+  public selectTool(tool: Tool) {
+    this.selectedTool.emit(tool);
   }
 }

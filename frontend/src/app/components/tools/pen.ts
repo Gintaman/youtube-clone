@@ -1,3 +1,5 @@
+// TODO we need to differentiate between pentools and shape tools.
+// shape tools need to perform the draw on mouseup, while pen tools need to draw on mousemove
 import { DrawingTool } from './drawing-tool';
 
 export interface Point {

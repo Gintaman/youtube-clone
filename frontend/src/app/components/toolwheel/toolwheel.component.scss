@@ -1,0 +1,33 @@
+.toolwheel {
+  --g: 1px; /* The gap between shapes*/
+  --s: 180px; /* the size*/
+
+  height: 200px;
+  width: 200px;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.toolwheel > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: var(--s) solid var(--c, #323740);
+  border-radius: 50%;
+  clip-path: polygon(
+    calc(50% + var(--g) / 2) 50%,
+    calc(50% + var(--g) / 2) 0%,
+    100% 0%,
+    100% calc(0% - var(--g) / 2),
+    50% calc(50% - var(--g) / 2)
+  );
+}
+
+.tool:hover {
+  --c: red;
+}

@@ -1,0 +1,19 @@
+<div
+  [ngStyle]="{
+    top: posY() - radius + 'px',
+    left: posX() - radius + 'px',
+    width: radius * 2 + 'px',
+    height: radius * 2 + 'px',
+  }"
+  class="toolwheel"
+>
+  @for (tool of tools; track tool) {
+    <div
+      class="tool"
+      [ngClass]="'color' + ($index + 1)"
+      [ngStyle]="{
+        transform: 'rotate(' + $index * anglePerSlice + 'deg)',
+      }"
+    ></div>
+  }
+</div>

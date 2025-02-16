@@ -61,6 +61,8 @@ export class Drawable {
   }
 
   public redraw() {
+    // TODO This is way too overly complicated. How will we store the path if its stored inside of closures?
+    // Refactor to just use array of points
     this.path.forEach((p: Function) => {
       p();
     });
